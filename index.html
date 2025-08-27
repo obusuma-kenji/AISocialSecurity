@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクティブ・レポート：AIと社労士業務の未来</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: レポートの線形的な構成を脱し、ユーザーが中心的なテーマを直感的に探求できるダッシュボード型SPAを設計。構造は「イントロダクション」→「AIパートナーの機能紹介（インタラクティブ要素）」→「市場の必然性（データ可視化）」→「社労士の役割進化（比較インタラクション）」→「未来への提言」の5部構成。この流れは、まずコンセプトを提示し、その必要性の根拠を示し、具体的な変化を体感させ、最後に行動を促すという、理解と納得を深めるための最適なユーザーフローであると判断したため。ナビゲーションは追従ヘッダーによるスムーズスクロールで実現し、いつでも各セクションにアクセス可能にする。 -->
+    <!-- Visualization & Content Choices: 
+        - [レポート情報] AIパートナーの5つの主要機能 -> [目的] 機能の概要を分かりやすく提示 -> [手法] アイコン付きカードレイアウト -> [インタラクション] なし。静的表示で情報を簡潔に伝える -> [理由] 複雑な操作なしに、コンセプトの全体像を即座に把握させるため -> [ライブラリ] HTML/Tailwind CSS。
+        - [レポート情報] ESG投資の拡大 -> [目的] 市場の追い風を定量的に示す -> [手法] 棒グラフ -> [インタラクション] ホバーで詳細情報を表示 -> [理由] 抽象的な「拡大」という概念を具体的な数値データで視覚化し、説得力を高めるため -> [ライブラリ] Chart.js。
+        - [レポート情報] 社労士の役割進化（表3.1） -> [目的] 変化を劇的に体感させる -> [手法] 「従来型」と「AI拡張型」を切り替えるトグルボタンと、内容が動的に変化する比較表 -> [インタラクション] ボタンクリックで表示内容を即座に切り替え -> [理由] 静的な表を読むよりも、能動的な操作によって変化を「発見」する体験の方が、記憶に残りやすく、インパクトが大きいため -> [ライブラリ] Vanilla JS。
+        - [レポート情報] 全体のテキストコンテンツ -> [目的] 詳細な分析と洞察を提供 -> [手法] アコーディオン形式のFAQセクション -> [インタラクション] クリックで詳細内容を展開 -> [理由] ページを不必要に長くすることなく、ユーザーが必要な情報だけを選択的に深掘りできるようにするため -> [ライブラリ] Vanilla JS。
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #FDFBF8;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .active-nav {
+            color: #2563EB;
+            position: relative;
+        }
+        .active-nav::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #2563EB;
+        }
+        .toggle-btn {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .toggle-btn.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .toggle-btn:not(.active) {
+            background-color: #E5E7EB;
+            color: #4B5563;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="sticky top-0 z-50 w-full transition-all duration-300 glassmorphism">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-gray-800">AI x 社労士</span>
+                </div>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#vision" class="nav-link text-gray-600 hover:text-blue-600 transition-colors">ビジョン</a>
+                    <a href="#market" class="nav-link text-gray-600 hover:text-blue-600 transition-colors">市場の必然性</a>
+                    <a href="#evolution" class="nav-link text-gray-600 hover:text-blue-600 transition-colors">役割の進化</a>
+                    <a href="#recommendations" class="nav-link text-gray-600 hover:text-blue-600 transition-colors">未来への提言</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 bg-amber-50">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4 leading-tight">社労士はAIを「戦略パートナー」へ</h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    AIとの融合は、単なる業務効率化に留まりません。社労士の役割を再定義し、企業の成長を根幹から支える「戦略的人事労務パートナー」へと進化させる、必然的な未来です。
+                </p>
+            </div>
+        </section>
+
+        <section id="vision" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">コンセプト：「AI労務監査・決算パートナー」</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">企業の労務状況をリアルタイムで診断し、未来のリスクを予測・予防するインテリジェントなアプリケーション。その中核となる5つの機能を紹介します。</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4 text-blue-500">🔄</div>
+                        <h3 class="font-bold text-lg mb-2">組織の健康診断</h3>
+                        <p class="text-sm text-gray-600">勤怠・給与・人事データをAPIで自動連携し、一元的に収集・整理します。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4 text-blue-500">🛡️</div>
+                        <h3 class="font-bold text-lg mb-2">コンプライアンス診断</h3>
+                        <p class="text-sm text-gray-600">最新の労働法規とデータを照合し、法令違反リスクを瞬時に検出・警告します。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4 text-blue-500">📈</div>
+                        <h3 class="font-bold text-lg mb-2">未来リスクの予測</h3>
+                        <p class="text-sm text-gray-600">機械学習で離職率上昇やメンタルヘルス不調の兆候を学習し、未来のリスクを予測します。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4 text-blue-500">📄</div>
+                        <h3 class="font-bold text-lg mb-2">労務決算レポート</h3>
+                        <p class="text-sm text-gray-600">重要指標をグラフで可視化し、経営判断に使える分析レポートを自動生成します。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl mb-4 text-blue-500">💡</div>
+                        <h3 class="font-bold text-lg mb-2">改善策の提案</h3>
+                        <p class="text-sm text-gray-600">課題に対し、具体的な改善アクションや活用可能な助成金情報を自動で提案します。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="market" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">なぜ「今」必要なのか？</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">このコンセプトは空想ではありません。規制、金融、法制度という3つの強力な社会的・経済的要請が、その必要性を裏付けています。</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 text-center">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-2 text-blue-600">根拠① 人的資本の情報開示義務化</h3>
+                        <p class="text-gray-600">2023年3月期から大手企業に義務化。労働環境が企業価値を左右する経営指標となり、客観的データによる健全性の証明が必須に。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-2 text-blue-600">根拠② ESG投資の拡大</h3>
+                        <p class="text-gray-600">投資家はESG、特に「S(社会)」を厳しく評価。データに基づく労務監査は、投資家への強力なアピール材料となります。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-2 text-blue-600">根拠③ 社労士法の改正</h3>
+                        <p class="text-gray-600">法改正で「労務監査」が社労士の業務として正式に明記。客観性を担保するツールの必要性が国レベルで高まっています。</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-gray-800">市場の追い風：世界のESG投資額の推移</h3>
+                    <p class="text-center text-gray-600 mb-6">データに基づく労務管理の重要性は、ESG投資の急拡大という世界的な潮流と直結しています。以下のグラフは、その力強い成長を示しています。</p>
+                    <div class="chart-container">
+                        <canvas id="esgChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="evolution" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">社労士の役割は、どう進化するのか？</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">AIは「作業」を代替し、社労士を解放します。その結果、価値の源泉は「手続きの代行者」から、データに基づき未来を描く「組織の主治医」へとシフトします。</p>
+                </div>
+
+                <div class="flex justify-center mb-8">
+                    <div class="flex rounded-lg p-1 bg-gray-200">
+                        <button id="btn-traditional" class="toggle-btn px-6 py-2 rounded-md font-semibold">従来型</button>
+                        <button id="btn-ai" class="toggle-btn active px-6 py-2 rounded-md font-semibold">AI拡張型</button>
+                    </div>
+                </div>
+
+                <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+                    <div class="p-6 md:p-8">
+                        <h3 id="evolution-title" class="text-2xl font-bold text-center mb-6 text-blue-700"></h3>
+                        <div id="evolution-content" class="space-y-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="recommendations" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">データ駆動型の未来に向けた提言</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">AIによる変革の波を乗りこなし、成功を収めるためには、各関係者が能動的に行動を起こす必要があります。</p>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-4">
+                    <div class="accordion-item bg-white rounded-lg shadow-sm">
+                        <button class="accordion-header w-full text-left p-5 font-semibold text-lg flex justify-between items-center hover:bg-gray-100">
+                            社労士・社労士法人へ
+                            <span class="accordion-icon text-blue-500 text-2xl transform transition-transform">+</span>
+                        </button>
+                        <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-5 border-t">
+                                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                    <li><strong>スキルへの投資:</strong> データリテラシー、AI活用技術、戦略的コンサルティング能力を習得する。</li>
+                                    <li><strong>段階的な技術導入:</strong> まずは生成AIの内部業務活用から始め、クラウドHR基盤を経て、統合AI監査ツールへと移行する。</li>
+                                    <li><strong>ビジネスモデルの再構築:</strong> 時間単価モデルから脱却し、リスク軽減や生産性向上といった「価値」に基づく料金体系を構築する。</li>
+                               </ul>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-white rounded-lg shadow-sm">
+                        <button class="accordion-header w-full text-left p-5 font-semibold text-lg flex justify-between items-center hover:bg-gray-100">
+                            企業経営層・人事部門へ
+                            <span class="accordion-icon text-blue-500 text-2xl transform transition-transform">+</span>
+                        </button>
+                        <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-5 border-t">
+                                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                    <li><strong>GRCへの統合:</strong> AI労務監査の結果を財務監査と同等に扱い、取締役会等に定期報告する。</li>
+                                    <li><strong>AIガバナンスの確立:</strong> データプライバシー、アルゴリズムのバイアス、人間の監督責任を明確にした社内ポリシーを策定する。</li>
+                                    <li><strong>エンパワーメントのための活用:</strong> AIの洞察を懲罰的な監視ではなく、従業員を支援し、より良い労働環境を育成するために利用する。</li>
+                               </ul>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-white rounded-lg shadow-sm">
+                        <button class="accordion-header w-full text-left p-5 font-semibold text-lg flex justify-between items-center hover:bg-gray-100">
+                            テクノロジー開発者へ
+                            <span class="accordion-icon text-blue-500 text-2xl transform transition-transform">+</span>
+                        </button>
+                        <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                            <div class="p-5 border-t">
+                                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                    <li><strong>説明可能性(XAI)の優先:</strong> AIの判断根拠を専門家でないユーザーにも理解できる形で提示するシステムを設計する。</li>
+                                    <li><strong>専門家との共同設計:</strong> 開発プロセスの全段階に経験豊富な社労士を関与させ、現場のニーズに合致したツールを構築する。</li>
+                                    <li><strong>セキュリティとコンプライアンス:</strong> 設計段階から個人情報保護法(APPI)やGDPR等を遵守するセキュアなアーキテクチャを構築する。</li>
+                               </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 AI-Powered Sharoushi Future Report. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">このページは提供されたレポートに基づき、インタラクティブな形式で再構成したものです。</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const esgData = {
+                labels: ['2016', '2018', '2020', '2022', '2024 (予測)'],
+                datasets: [{
+                    label: '世界のESG投資額 (兆ドル)',
+                    data: [22.8, 30.6, 35.3, 41.1, 50.0],
+                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    borderRadius: 5,
+                    hoverBackgroundColor: 'rgba(59, 130, 246, 0.8)'
+                }]
+            };
+
+            const esgConfig = {
+                type: 'bar',
+                data: esgData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.parsed.y} 兆ドル`;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: '世界の持続可能な投資額の推移',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '投資額 (兆ドル)'
+                            }
+                        },
+                        x: {
+                           title: {
+                                display: true,
+                                text: '年'
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const esgChartCtx = document.getElementById('esgChart');
+            if(esgChartCtx) {
+                new Chart(esgChartCtx, esgConfig);
+            }
+
+            const evolutionData = {
+                traditional: {
+                    title: '従来型の社労士業務 (手作業・事後対応型)',
+                    items: [
+                        { icon: '📋', title: 'コンプライアンス・監査', text: 'タイムカード等の紙媒体記録を、手作業でサンプルベースでレビュー。' },
+                        { icon: '🔥', title: 'リスクマネジメント', text: '労働紛争や行政調査が発生した後の事後対応。' },
+                        { icon: '🗣️', title: 'アドバイザリー', text: '顧客からの質問に対し、法規制や個人的経験に基づいてアドバイスを提供。' },
+                        { icon: '✍️', title: '事務処理', text: '社会保険関連書類、雇用契約書などを手作業で作成・提出。' },
+                    ]
+                },
+                ai: {
+                    title: 'AI拡張型の社労士の役割 (データ駆動・予防型)',
+                    items: [
+                        { icon: '🔍', title: 'コンプライアンス・監査', text: 'AIによる継続的・リアルタイム・全件データの監査。AIの検出結果の検証、根本原因調査、是正策の設計に注力。' },
+                        { icon: '🛡️', title: 'リスクマネジメント', text: '予測分析を用いて高リスクの部署や個人をプロアクティブに特定し、予防的措置を実施。' },
+                        { icon: '📊', title: 'アドバイザリー', text: 'AIが生成した「労務決算レポート」に基づき、データに裏付けられた戦略的提言を提供。' },
+                        { icon: '🤖', title: '事務処理', text: 'AIが生成した書類のレビュー、検証、承認。自動化されたワークフローの管理と例外処理。' },
+                    ]
+                }
+            };
+
+            const btnTraditional = document.getElementById('btn-traditional');
+            const btnAi = document.getElementById('btn-ai');
+            const evolutionTitle = document.getElementById('evolution-title');
+            const evolutionContent = document.getElementById('evolution-content');
+
+            function updateEvolutionContent(type) {
+                const data = evolutionData[type];
+                evolutionTitle.textContent = data.title;
+                evolutionContent.innerHTML = data.items.map(item => `
+                    <div class="flex items-start">
+                        <div class="text-3xl mr-4">${item.icon}</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">${item.title}</h4>
+                            <p class="text-gray-600">${item.text}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                if (type === 'traditional') {
+                    btnTraditional.classList.add('active');
+                    btnAi.classList.remove('active');
+                } else {
+                    btnAi.classList.add('active');
+                    btnTraditional.classList.remove('active');
+                }
+            }
+            
+            if(btnTraditional && btnAi && evolutionTitle && evolutionContent) {
+                btnTraditional.addEventListener('click', () => updateEvolutionContent('traditional'));
+                btnAi.addEventListener('click', () => updateEvolutionContent('ai'));
+                updateEvolutionContent('ai');
+            }
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const header = document.getElementById('header');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: `-${header.offsetHeight}px`,
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active-nav');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active-nav');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = item.querySelector('.accordion-icon');
+
+                header.addEventListener('click', () => {
+                    const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+                    
+                    accordionItems.forEach(i => {
+                        i.querySelector('.accordion-content').style.maxHeight = '0px';
+                        i.querySelector('.accordion-icon').textContent = '+';
+                        i.querySelector('.accordion-icon').classList.remove('rotate-45');
+                    });
+
+                    if (!isOpen) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        icon.textContent = '-';
+                        icon.classList.add('rotate-45');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
